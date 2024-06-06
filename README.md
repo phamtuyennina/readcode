@@ -145,20 +145,22 @@ $orders = DB::table('orders')->whereRaw('price > IF(state = "TX", ?, 100)', [200
 Copy thư mục NINAGateway bỏ vào /src .
 Khai báo provider và aliase trong file config/app.php
 'aliases' => Facade::defaultAliases()->merge([
-        ....
-        "Gateway" =>  \NINA\NINAGateway\Facade\Gateway::class,
-    ])->toArray(),
-    'providers' => ServiceProvider::defaultProviders()->merge([
-       ...
-        \NINA\NINAGateway\Providers\GatewayServiceProvider::class
-    ])->toArray(),
+    ....
+    "Gateway" =>  \NINA\NINAGateway\Facade\Gateway::class,
+])->toArray(),
+'providers' => ServiceProvider::defaultProviders()->merge([
+   ...
+    \NINA\NINAGateway\Providers\GatewayServiceProvider::class
+])->toArray(),
+
+use NINA\NINAGateway\Facade\Gateway; // sử dụng Gateway
 ```
 ### VNPay
 
 #### Tạo yêu cầu thanh toán:
 
 ```php
-use NINA\NINAGateway\Facade\Gateway;
+
 $response =  Gateway::purchase([
     'vnp_TxnRef' => time(),
     'vnp_OrderType' => 100000,
@@ -179,7 +181,7 @@ Kham khảo thêm các tham trị khi tạo yêu cầu và VNPay trả về tạ
 #### Kiểm tra thông tin `vnp_ReturnUrl` khi khách được VNPay redirect về:
 
 ```php
-$response = $gateway->completePurchase()->send();
+$response = Gateway::completePurchase()->send();
 
 if ($response->isSuccessful()) {
     // xử lý kết quả và hiển thị.
@@ -199,7 +201,7 @@ Kham khảo thêm các tham trị khi VNPay trả về tại [đây](https://san
 #### Kiểm tra thông tin `IPN` do VNPay gửi sang:
 
 ```php
-$response = $gateway->notification()->send();
+$response = Gateway::notification()->send();
 
 if ($response->isSuccessful()) {
     // xử lý kết quả.
@@ -219,7 +221,7 @@ Kham khảo thêm các tham trị khi VNPay gửi sang tại [đây](https://san
 #### Kiểm tra trạng thái giao dịch:
 
 ```php
-$response = $gateway->queryTransaction([
+$response = Gateway::queryTransaction([
    'vnp_TxnRef' => 1717649685,
     'vnp_OrderInfo' => 1717649685,
     'vnp_IpAddr' => '127.0.0.1',
