@@ -145,23 +145,20 @@ $orders = DB::table('orders')->whereRaw('price > IF(state = "TX", ?, 100)', [200
 #### Khởi tạo gateway:
 
 ```php
-use NINA\NINAGateway\Omnipay\NINAPayment;
-
-$gateway = NINAPayment::create('VNPay');
-$gateway->initialize(config('gateways.gateways.VNPay.options'));
+use NINA\NINAGateway\Facade\Gateway;
 ```
 Gateway khởi tạo ở trên dùng để tạo các yêu cầu xử lý đến VNPay hoặc dùng để nhận yêu cầu do VNPay gửi đến.
 
 #### Tạo yêu cầu thanh toán:
 
 ```php
-$response = $gateway->purchase([
+$response =  Gateway::purchase([
     'vnp_TxnRef' => time(),
     'vnp_OrderType' => 100000,
     'vnp_OrderInfo' => time(),
     'vnp_IpAddr' => '127.0.0.1',
     'vnp_Amount' => 1000000,
-    'vnp_ReturnUrl' => 'https://github.com/phpviet',
+    'vnp_ReturnUrl' => 'https://nina.vn/',
 ])->send();
 
 if ($response->isRedirect()) {
