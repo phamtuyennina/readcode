@@ -141,6 +141,18 @@ $orders = DB::table('orders')->whereRaw('price > IF(state = "TX", ?, 100)', [200
 =======================
 
 ## Thanh Toán Online
+```php
+Copy thư mục NINAGateway bỏ vào /src .
+Khai báo provider và aliase trong file config/app.php
+'aliases' => Facade::defaultAliases()->merge([
+        ....
+        "Gateway" =>  \NINA\NINAGateway\Facade\Gateway::class,
+    ])->toArray(),
+    'providers' => ServiceProvider::defaultProviders()->merge([
+       ...
+        \NINA\NINAGateway\Providers\GatewayServiceProvider::class
+    ])->toArray(),
+```
 ### VNPay
 #### Khởi tạo gateway:
 
