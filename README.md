@@ -138,3 +138,102 @@ $orders = DB::table('orders')->whereRaw('price > IF(state = "TX", ?, 100)', [200
 ```
 #### Điều kiện Where cơ bản [Xem thêm tại](https://laravel.com/docs/11.x/queries#basic-where-clauses)
 #### Điều kiện where OrWhere [Xem thêm tại](https://laravel.com/docs/11.x/queries#or-where-clauses)
+=======================
+
+## Thanh Toán Online
+### VNPay
+#### Khởi tạo gateway:
+
+```php
+use NINA\NINAGateway\Omnipay\NINAPayment;
+
+$gateway = NINAPayment::create('VNPay');
+$gateway->initialize(config('gateways.gateways.VNPay.options'));
+```
+Gateway khởi tạo ở trên dùng để tạo các yêu cầu xử lý đến VNPay hoặc dùng để nhận yêu cầu do VNPay gửi đến.
+
+#### Tạo yêu cầu thanh toán:
+
+```php
+$response = $gateway->purchase([
+    'vnp_TxnRef' => time(),
+    'vnp_OrderType' => 100000,
+    'vnp_OrderInfo' => time(),
+    'vnp_IpAddr' => '127.0.0.1',
+    'vnp_Amount' => 1000000,
+    'vnp_ReturnUrl' => 'https://github.com/phpviet',
+])->send();
+
+if ($response->isRedirect()) {
+    $redirectUrl = $response->getRedirectUrl(); // URL trang thanh toán
+    // chuyển hướng sang trang VNPay để thanh toán
+}
+```
+
+Kham khảo thêm các tham trị khi tạo yêu cầu và VNPay trả về tại [đây](https://sandbox.vnpayment.vn/apis/docs/huong-dan-tich-hop/#t%E1%BA%A1o-url-thanh-to%C3%A1n).
+
+#### Kiểm tra thông tin `vnp_ReturnUrl` khi khách được VNPay redirect về:
+
+```php
+$response = $gateway->completePurchase()->send();
+
+if ($response->isSuccessful()) {
+    // xử lý kết quả và hiển thị.
+    print $response->vnp_Amount;
+    print $response->vnp_TxnRef;
+    
+    var_dump($response->getData()); // toàn bộ data do VNPay gửi sang.
+    
+} else {
+
+    print $response->getMessage();
+}
+```
+
+Kham khảo thêm các tham trị khi VNPay trả về tại [đây](https://sandbox.vnpayment.vn/apis/docs/huong-dan-tich-hop/#code-returnurl).
+
+#### Kiểm tra thông tin `IPN` do VNPay gửi sang:
+
+```php
+$response = $gateway->notification()->send();
+
+if ($response->isSuccessful()) {
+    // xử lý kết quả.
+    print $response->vnp_Amount;
+    print $response->vnp_TxnRef;
+    
+    var_dump($response->getData()); // toàn bộ data do VNPay gửi sang.
+    
+} else {
+
+    print $response->getMessage();
+}
+```
+
+Kham khảo thêm các tham trị khi VNPay gửi sang tại [đây](https://sandbox.vnpayment.vn/apis/docs/huong-dan-tich-hop/#code-ipn-url).
+
+#### Kiểm tra trạng thái giao dịch:
+
+```php
+$response = $gateway->queryTransaction([
+   'vnp_TxnRef' => 1717649685,
+    'vnp_OrderInfo' => 1717649685,
+    'vnp_IpAddr' => '127.0.0.1',
+    'vnp_TransactionDate' => 20240606115523,
+    'vnp_TransactionNo' => 14446261,
+])->send();
+
+if ($response->isSuccessful()) {
+    // xử lý kết quả và hiển thị.
+    print $response->getTransactionId();
+    print $response->getTransactionReference();
+    
+    var_dump($response->getData()); // toàn bộ data do VNPay gửi về.
+    
+} else {
+
+    print $response->getMessage();
+}
+```
+Kham khảo thêm các tham trị khi tạo yêu cầu và VNPay trả về tại [đây](https://goo.gl/FHdM5B).
+
