@@ -154,16 +154,11 @@ Khai báo provider và aliase trong file config/app.php
     ])->toArray(),
 ```
 ### VNPay
-#### Khởi tạo gateway:
-
-```php
-use NINA\NINAGateway\Facade\Gateway;
-```
-Gateway khởi tạo ở trên dùng để tạo các yêu cầu xử lý đến VNPay hoặc dùng để nhận yêu cầu do VNPay gửi đến.
 
 #### Tạo yêu cầu thanh toán:
 
 ```php
+use NINA\NINAGateway\Facade\Gateway;
 $response =  Gateway::purchase([
     'vnp_TxnRef' => time(),
     'vnp_OrderType' => 100000,
