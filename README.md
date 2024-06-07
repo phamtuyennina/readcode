@@ -188,11 +188,11 @@ if ($response->isSuccessful()) {
     echo $response->vnp_Amount;
     echo $response->vnp_TxnRef;
     
-    var_dump($response->getData()); // toàn bộ data do VNPay gửi sang.
+    dd($response->getData()); // toàn bộ data do VNPay gửi sang.
     
 } else {
 
-    echo $response->getMessage();
+    dd($response->getMessage());
 }
 ```
 
@@ -208,11 +208,11 @@ if ($response->isSuccessful()) {
     echo $response->vnp_Amount;
     echo $response->vnp_TxnRef;
     
-    var_dump($response->getData()); // toàn bộ data do VNPay gửi sang.
+    dd($response->getData()); // toàn bộ data do VNPay gửi sang.
     
 } else {
 
-    echo $response->getMessage();
+    dd($response->getMessage());
 }
 ```
 
@@ -234,11 +234,11 @@ if ($response->isSuccessful()) {
     echo $response->getTransactionId();
     echo $response->getTransactionReference();
     
-    var_dump($response->getData()); // toàn bộ data do VNPay gửi về.
+    dd($response->getData()); // toàn bộ data do VNPay gửi về.
     
 } else {
 
-    echo $response->getMessage();
+    dd($response->getMessage());
 }
 ```
 Kham khảo thêm các tham trị khi tạo yêu cầu và VNPay trả về tại [đây](https://goo.gl/FHdM5B).
@@ -286,11 +286,11 @@ if ($response->isSuccessful()) {
     echo $response->vpc_Amount;
     echo $response->vpc_MerchTxnRef;
     
-    var_dump($response->getData()); // toàn bộ data do OnePay gửi sang.
+    dd($response->getData()); // toàn bộ data do OnePay gửi sang.
     
 } else {
 
-    echo $response->getMessage();
+    dd($response->getMessage());
 }
 ```
 
@@ -306,11 +306,11 @@ if ($response->isSuccessful()) {
     echo $response->vpc_Amount;
     echo $response->vpc_MerchTxnRef;
     
-    var_dump($response->getData()); // toàn bộ data do OnePay gửi sang.
+    dd($response->getData()); // toàn bộ data do OnePay gửi sang.
     
 } else {
 
-    echo $response->getMessage();
+   dd($response->getMessage());
 }
 ```
 
@@ -326,11 +326,11 @@ $response = $onePay->queryTransaction([
 if ($response->isSuccessful()) {
     //xử lý kết quả và hiển thị.
 
-    var_dump($response->getData()); // toàn bộ data do OnePay gửi về.
+    dd($response->getData()); // toàn bộ data do OnePay gửi về.
     
 } else {
 
-    echo $response->getMessage();
+    dd($response->getMessage());
 }
 ```
 
@@ -399,11 +399,11 @@ if ($response->isSuccessful()) {
     echo $response->amount;
     echo $response->reference_number;
     
-    var_dump($response->getData()); // toàn bộ data do VTCPay gửi sang.
+    dd($response->getData()); // toàn bộ data do VTCPay gửi sang.
     
 } else {
 
-    echo $response->getMessage();
+    dd($response->getMessage());
 }
 ```
 
@@ -420,10 +420,10 @@ if ($response->isSuccessful()) {
     echo $response->amount;
     echo $response->reference_number;
     
-    var_dump($response->getData()); // toàn bộ data do VTCPay gửi sang.
+    dd($response->getData()); // toàn bộ data do VTCPay gửi sang.
     
 } else {
 
-    echo $response->getMessage();
+    dd($response->getMessage());
 }
 ```
