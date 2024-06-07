@@ -185,14 +185,14 @@ $response = Gateway::completePurchase()->send();
 
 if ($response->isSuccessful()) {
     // xử lý kết quả và hiển thị.
-    print $response->vnp_Amount;
-    print $response->vnp_TxnRef;
+    echo $response->vnp_Amount;
+    echo $response->vnp_TxnRef;
     
     var_dump($response->getData()); // toàn bộ data do VNPay gửi sang.
     
 } else {
 
-    print $response->getMessage();
+    echo $response->getMessage();
 }
 ```
 
@@ -205,14 +205,14 @@ $response = Gateway::notification()->send();
 
 if ($response->isSuccessful()) {
     // xử lý kết quả.
-    print $response->vnp_Amount;
-    print $response->vnp_TxnRef;
+    echo $response->vnp_Amount;
+    echo $response->vnp_TxnRef;
     
     var_dump($response->getData()); // toàn bộ data do VNPay gửi sang.
     
 } else {
 
-    print $response->getMessage();
+    echo $response->getMessage();
 }
 ```
 
@@ -231,15 +231,118 @@ $response = Gateway::queryTransaction([
 
 if ($response->isSuccessful()) {
     // xử lý kết quả và hiển thị.
-    print $response->getTransactionId();
-    print $response->getTransactionReference();
+    echo $response->getTransactionId();
+    echo $response->getTransactionReference();
     
     var_dump($response->getData()); // toàn bộ data do VNPay gửi về.
     
 } else {
 
-    print $response->getMessage();
+    echo $response->getMessage();
 }
 ```
 Kham khảo thêm các tham trị khi tạo yêu cầu và VNPay trả về tại [đây](https://goo.gl/FHdM5B).
 
+### OnePay
+#### Nội địa
+##### Khởi tạo gateway:
+
+```php
+use NINA\NINAGateway\Facade\Gateway;
+
+$onePay = Gateway::gateway('\NINA\NINAGateway\OnePay\DomesticGateway');
+$onePay->initialize(config('gateways.gateways.OnePayDomestic.options'));
+
+```
+Gateway khởi tạo ở trên dùng để tạo các yêu cầu xử lý đến OnePay hoặc dùng để nhận yêu cầu do OnePay gửi đến.
+
+##### Tạo yêu cầu thanh toán:
+
+```php
+$response = $onePay->purchase([
+    'AgainLink' => 'https://ninaphp.info/',
+    'vpc_MerchTxnRef' => time(),
+    'vpc_ReturnURL' => 'https://ninaphp.info/',
+    'vpc_TicketNo' => '127.0.0.1',
+    'vpc_Amount' => '200000',
+    'vpc_OrderInfo' => time(),
+])->send();
+
+if ($response->isRedirect()) {
+    $redirectUrl = $response->getRedirectUrl();
+    // chuyển khách sang trang OnePay để thanh toán
+}
+```
+
+Kham khảo thêm các tham trị khi tạo yêu cầu và OnePay trả về tại [đây](https://mtf.onepay.vn/developer/resource/documents/docx/quy_trinh_tich_hop-noidia.pdf).
+
+##### Kiểm tra thông tin `vpc_ReturnURL` khi khách được OnePay redirect về:
+
+```php
+$response = $onePay->completePurchase()->send();
+
+if ($response->isSuccessful()) {
+    // xử lý kết quả và hiển thị.
+    echo $response->vpc_Amount;
+    echo $response->vpc_MerchTxnRef;
+    
+    var_dump($response->getData()); // toàn bộ data do OnePay gửi sang.
+    
+} else {
+
+    echo $response->getMessage();
+}
+```
+
+Kham khảo thêm các tham trị khi OnePay trả về tại [đây](https://mtf.onepay.vn/developer/resource/documents/docx/quy_trinh_tich_hop-noidia.pdf).
+
+##### Kiểm tra thông tin `IPN` do OnePay gửi sang:
+
+```php
+$response = $onePay->notification()->send();
+
+if ($response->isSuccessful()) {
+    //xử lý kết quả và hiển thị.
+    echo $response->vpc_Amount;
+    echo $response->vpc_MerchTxnRef;
+    
+    var_dump($response->getData()); // toàn bộ data do OnePay gửi sang.
+    
+} else {
+
+    echo $response->getMessage();
+}
+```
+
+Kham khảo thêm các tham trị khi OnePay gửi sang tại [đây](https://mtf.onepay.vn/developer/resource/documents/docx/quy_trinh_tich_hop-noidia.pdf).
+
+##### Kiểm tra trạng thái giao dịch:
+
+```php
+$response = $onePay->queryTransaction([
+    'vpc_MerchTxnRef' => '123',
+])->send();
+
+if ($response->isSuccessful()) {
+    //xử lý kết quả và hiển thị.
+
+    var_dump($response->getData()); // toàn bộ data do OnePay gửi về.
+    
+} else {
+
+    echo $response->getMessage();
+}
+```
+
+Kham khảo thêm các tham trị khi tạo yêu cầu và OnePay trả về tại [đây](https://mtf.onepay.vn/developer/resource/documents/docx/quy_trinh_tich_hop-noidia.pdf).
+
+##### Phương thức hổ trợ debug:
+
+Một số phương thức chung hổ trợ debug khi `isSuccessful()` trả về `FALSE`:
+
+```php
+    echo $response->getCode(); // mã báo lỗi do OnePay gửi sang.
+    echo $response->getMessage(); // câu thông báo lỗi do OnePay gửi sang.
+```
+
+Kham khảo bảng báo lỗi `getCode()` chi tiết tại [đây](https://mtf.onepay.vn/developer/resource/documents/docx/quy_trinh_tich_hop-noidia.pdf).
