@@ -359,4 +359,4 @@ $onePay->initialize(config('gateways.gateways.OnePayInternational.options'));
 ```
 Gateway khởi tạo ở trên dùng để tạo các yêu cầu xử lý đến OnePay hoặc dùng để nhận yêu cầu do OnePay gửi đến.
 
-**<p style="color:red;">Các mục khác giống cổng nội địa<p>**
+**🔴Các mục khác giống cổng nội địa**
