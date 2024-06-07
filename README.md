@@ -346,3 +346,17 @@ Một số phương thức chung hổ trợ debug khi `isSuccessful()` trả v�
 ```
 
 Kham khảo bảng báo lỗi `getCode()` chi tiết tại [đây](https://mtf.onepay.vn/developer/resource/documents/docx/quy_trinh_tich_hop-noidia.pdf).
+
+#### Quốc tế
+##### Khởi tạo gateway:
+
+```php
+use NINA\NINAGateway\Facade\Gateway;
+
+$onePay = Gateway::gateway('\NINA\NINAGateway\OnePay\InternationalGateway');
+$onePay->initialize(config('gateways.gateways.OnePayInternational.options'));
+
+```
+Gateway khởi tạo ở trên dùng để tạo các yêu cầu xử lý đến OnePay hoặc dùng để nhận yêu cầu do OnePay gửi đến.
+
+**<p style="color:red;">Các mục khác giống cổng nội địa<p>**
