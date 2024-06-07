@@ -360,3 +360,70 @@ $onePay->initialize(config('gateways.gateways.OnePayInternational.options'));
 Gateway khởi tạo ở trên dùng để tạo các yêu cầu xử lý đến OnePay hoặc dùng để nhận yêu cầu do OnePay gửi đến.
 
 **🔴Các mục khác giống cổng nội địa**
+
+### VTCPay
+#### Khởi tạo gateway:
+
+```php
+$vtcPay = Gateway::gateway('\NINA\NINAGateway\VTCPay\Gateway');
+$vtcPay->initialize(config('gateways.gateways.VTCPay.options'));
+```
+Gateway khởi tạo ở trên dùng để tạo các yêu cầu xử lý đến VTCPay hoặc dùng để nhận yêu cầu do VTCPay gửi đến.
+
+### Tạo yêu cầu thanh toán:
+
+```php
+$response = $vtcPay->purchase([
+    'reference_number' => time(),
+    'currency' => 'VND',
+    'amount' => 200000,
+    'url_return' =>'https://ninaphp.info/'
+])->send();
+
+if ($response->isRedirect()) {
+    $redirectUrl = $response->getRedirectUrl();
+    
+    // chuyển khách sang trang VTCPay để thanh toán
+}
+```
+
+Kham khảo thêm các tham trị khi tạo yêu cầu và VTCPay trả về tại [đây](https://vtcpay.vn/tai-lieu-tich-hop-website).
+
+### Kiểm tra thông tin `url_return` khi khách được VTCPay redirect về:
+
+```php
+$response = $vtcPay->completePurchase()->send();
+
+if ($response->isSuccessful()) {
+    //xử lý kết quả và hiển thị.
+    echo $response->amount;
+    echo $response->reference_number;
+    
+    var_dump($response->getData()); // toàn bộ data do VTCPay gửi sang.
+    
+} else {
+
+    echo $response->getMessage();
+}
+```
+
+Kham khảo thêm các tham trị khi VTCPay trả về tại [đây](https://vtcpay.vn/tai-lieu-tich-hop-website).
+
+
+### Kiểm tra thông tin `IPN` do VTCPay gửi sang:
+
+```php
+$response = $vtcPay->notification()->send();
+
+if ($response->isSuccessful()) {
+    //xử lý kết quả.
+    echo $response->amount;
+    echo $response->reference_number;
+    
+    var_dump($response->getData()); // toàn bộ data do VTCPay gửi sang.
+    
+} else {
+
+    echo $response->getMessage();
+}
+```
