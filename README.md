@@ -97,6 +97,8 @@ request()->getHost() // trả về tên miền hiện tại (không bao gồm gi
 ```
 ```php
 request()->has($key) // Kiểm tra 1 biến có trên URL không, ( hoạt động với cả POST)
+createRouterCache() //Tạo cache router
+execWriteConfigCache() //Tạo cache config
 ```
 
 # Các truy vấn CSDL
